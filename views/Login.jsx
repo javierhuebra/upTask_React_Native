@@ -66,6 +66,7 @@ const Login = () => {
                 }
             })
 
+            //Otra forma de hacer esto sin useEffect (no probado aun pero estoy seguro(? )
             /* if (loading !== true) {
                 const { token } = data.autenticarUsuario
 
