@@ -131,6 +131,7 @@ const Login = () => {
                     backgroundColor='#FFF'
                     mb='5'
                     onChangeText={texto => setEmail(texto)}
+                    value={email}
                 />
 
                 <Input

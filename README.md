@@ -21,3 +21,8 @@ PARA PODER ACCEDER A LOS DATOS QUE ESTAN EN EL BACKEND VAMOS A USAR APOLLO CLIEN
 PARA GUARDAR EL TOKEN SE UTILIZAR ASYNC STORAGE
 
 - npm i @react-native-async-storage/async-storage
+
+
+PARA USAR ICONOS VAMOS A USAR VECTOR ICONS (Lo dejo instalado pero no lo use porque no lo pude conectar con native-base)
+
+- npm i react-native-vector-icons

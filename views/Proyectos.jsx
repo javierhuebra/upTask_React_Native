@@ -15,9 +15,12 @@ const OBTENER_PROYECTOS = gql`
     }
 `
 
+
 const Proyectos = () => {
 
     const navigation = useNavigation()
+
+    
 
     //Apollo //para no usar useEffect hay que jugar con el loading, cuando loading es false la respuesta ya esta
     const { loading, error, data } = useQuery(OBTENER_PROYECTOS);
