@@ -1,4 +1,4 @@
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, Alert } from 'react-native'
 import { Text, useToast, Icon, CheckCircleIcon, Pressable } from 'native-base'
 import { gql, useMutation } from '@apollo/client'
 
@@ -13,12 +13,33 @@ const ACTUALIZAR_TAREA = gql`
         }
     }
 `
+const ELIMINAR_TAREA = gql`
+    mutation eliminarTarea($id: ID!){
+        eliminarTarea(id: $id)
+    }
+`
 
+//Consulta las tareas del proyecto
+const OBTENER_TAREAS = gql`
+    query obtenerTareas($input: ProyectoIDInput) {
+        obtenerTareas(input: $input) {
+            id
+            nombre
+            estado
+        }
+    }
+`
 
 const Tarea = ({ tarea }) => {
 
     //Apollo
-    const [ actualizarTarea, {data, loading, error} ] = useMutation(ACTUALIZAR_TAREA)
+    const [actualizarTarea, { data, loading, error }] = useMutation(ACTUALIZAR_TAREA)
+    const [eliminarTarea] = useMutation(ELIMINAR_TAREA, {
+        refetchQueries: [
+            OBTENER_TAREAS, // DocumentNode object parsed with gql
+            'obtenerTareas' // Query name
+          ],
+    })
 
     //Cambia de completo a incompleto el estado de la tarea
     const cambiarEstado = async () => {
@@ -26,26 +47,59 @@ const Tarea = ({ tarea }) => {
         //Obtener id de la tarea
         const { id } = tarea
 
-        try{
-          await actualizarTarea({
-            variables: {
-                id: id,
-                input: {
-                    nombre: tarea.nombre
-                },
-                estado: !tarea.estado
-            }
-          })
-          console.log(loading, data)
-        }catch(error){
+        try {
+            await actualizarTarea({
+                variables: {
+                    id: id,
+                    input: {
+                        nombre: tarea.nombre
+                    },
+                    estado: !tarea.estado
+                }
+            })
+            console.log(loading, data)
+        } catch (error) {
             console.log(error)
         }
     }
 
+    //Dialogo para eliminar o no una tarea
+    const mostrarEliminar = () => {
+        Alert.alert('Eliminar Tarea', '¿Deseas eliminar esta tarea?', [
+            {
+                text: 'Cancelar',
+                style: 'cancel'
+            },
+            {
+                text: 'Ok',
+                onPress: () => eliminarTareaDB()
+            }
+        ])
+    }
+
+    //Eliminar tarea de la base de datos
+
+    const eliminarTareaDB = async () => {
+        const { id } = tarea
+
+
+        try {
+            const { data } = await eliminarTarea({
+                variables: {
+                    id
+                }
+            })
+            console.log(data)
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
     return (
         <>
             <Pressable
-                onPress={ ()=> cambiarEstado()}
+                onPress={() => cambiarEstado()}
+                onLongPress={() => mostrarEliminar()}
                 style={styles.listItem}
             >
                 <Text color='#000' fontSize='15' width='90%'>{tarea.nombre}</Text>

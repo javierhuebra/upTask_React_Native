@@ -61,8 +61,13 @@ const Proyecto = ({ route }) => {
     console.log(error)
     console.log(data)
 
-    //Apollo crear tarea
-    const [nuevaTarea] = useMutation(NUEVA_TAREA)
+    //Apollo crear tarea y actualiza cache
+    const [nuevaTarea] = useMutation(NUEVA_TAREA, {
+        refetchQueries: [
+            OBTENER_TAREAS, // DocumentNode object parsed with gql
+            'obtenerTareas' // Query name
+          ],
+    })
 
     //Validar y crear tareas
     const handleSubmit = async () => {
